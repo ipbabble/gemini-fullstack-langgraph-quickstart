@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from google.api_core import exceptions as google_exceptions
 from google.genai import Client
 from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
@@ -37,6 +38,16 @@ if os.getenv("GEMINI_API_KEY") is None:
 
 # Used for Google Search API
 genai_client = Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+def _handle_model_not_found(e: Exception, model_name: str):
+    """Checks for a model not found error and raises a specific ValueError."""
+    if isinstance(e, google_exceptions.NotFound) or (
+        "404" in str(e) and "models/" in str(e)
+    ):
+        error_msg = f"Model '{model_name}' not found. Please try a different model."
+        raise ValueError(error_msg) from e
+    raise e
 
 
 # Nodes
@@ -83,15 +94,7 @@ def generate_query(state: OverallState, config: RunnableConfig) -> QueryGenerati
         result = structured_llm.invoke(formatted_prompt)
         return {"search_query": result.query}
     except Exception as e:
-        # Check if this is a model not found error
-        if "404" in str(e) and "models/" in str(e):
-            # Return an error that the frontend can catch
-            error_msg = (
-                f"Model '{model_to_use}' not found. Please try a different model."
-            )
-            raise ValueError(error_msg) from e
-        # Re-raise other errors
-        raise
+        _handle_model_not_found(e, model_to_use)
 
 
 def continue_to_web_research(state: QueryGenerationState):
@@ -154,15 +157,7 @@ def web_research(state: WebSearchState, config: RunnableConfig) -> OverallState:
             "web_research_result": [modified_text],
         }
     except Exception as e:
-        # Check if this is a model not found error
-        if "404" in str(e) and "models/" in str(e):
-            # Return an error that the frontend can catch
-            error_msg = (
-                f"Model '{model_to_use}' not found. Please try a different model."
-            )
-            raise ValueError(error_msg) from e
-        # Re-raise other errors
-        raise
+        _handle_model_not_found(e, model_to_use)
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
@@ -209,15 +204,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
             "number_of_ran_queries": len(state["search_query"]),
         }
     except Exception as e:
-        # Check if this is a model not found error
-        if "404" in str(e) and "models/" in str(e):
-            # Return an error that the frontend can catch
-            error_msg = (
-                f"Model '{reasoning_model}' not found. Please try a different model."
-            )
-            raise ValueError(error_msg) from e
-        # Re-raise other errors
-        raise
+        _handle_model_not_found(e, reasoning_model)
 
 
 def evaluate_research(
@@ -305,15 +292,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
             "sources_gathered": unique_sources,
         }
     except Exception as e:
-        # Check if this is a model not found error
-        if "404" in str(e) and "models/" in str(e):
-            # Return an error that the frontend can catch
-            error_msg = (
-                f"Model '{reasoning_model}' not found. Please try a different model."
-            )
-            raise ValueError(error_msg) from e
-        # Re-raise other errors
-        raise
+        _handle_model_not_found(e, reasoning_model)
 
 
 # Create our Agent Graph

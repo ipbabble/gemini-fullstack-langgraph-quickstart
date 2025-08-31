@@ -92,8 +92,8 @@ describe("Model Error Handling", () => {
     const errorDialogPath = join(process.cwd(), "src", "components", "ModelErrorDialog.tsx");
     const source = readFileSync(errorDialogPath, "utf-8");
 
-    // Look for the recommended fallback model
-    const fallbackMatch = source.match(/recommendedFallback = "([^"]+)"/);
+    // Look for the dynamic fallback model logic
+    const fallbackMatch = source.match(/recommendedFallback =\s*\n?\s*failedModel === "([^"]+)"/);
     expect(fallbackMatch).toBeTruthy();
 
     if (fallbackMatch) {

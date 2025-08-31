@@ -5,7 +5,6 @@ import { AlertTriangle, Zap, Cpu, CheckCircle } from "lucide-react";
 interface ModelErrorDialogProps {
   isOpen: boolean;
   failedModel: string;
-  errorMessage: string;
   onContinueWithFallback: (fallbackModel: string, rememberChoice: boolean) => void;
   onRetryWithDifferent: (newModel: string, rememberChoice: boolean) => void;
   onClose: () => void;
@@ -14,16 +13,15 @@ interface ModelErrorDialogProps {
 export const ModelErrorDialog: React.FC<ModelErrorDialogProps> = ({
   isOpen,
   failedModel,
-  errorMessage,
   onContinueWithFallback,
   onRetryWithDifferent,
   onClose,
 }) => {
-  const [rememberChoice, setRememberChoice] = React.useState(false);
 
   if (!isOpen) return null;
 
-  const recommendedFallback = "gemini-2.0-flash";
+  const recommendedFallback =
+    failedModel === "gemini-2.0-flash" ? "gemini-2.5-flash" : "gemini-2.0-flash";
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

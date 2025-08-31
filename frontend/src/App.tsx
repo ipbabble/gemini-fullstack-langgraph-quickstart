@@ -74,9 +74,9 @@ export default function App() {
       }
     },
     onError: (error: any) => {
-      // Check if this is a model 404 error
-      if (error.message && error.message.includes("404") && error.message.includes("models/")) {
-        const modelMatch = error.message.match(/models\/([\w-]+)/);
+      // Check if this is a model not found error using more specific matching
+      if (error.message?.includes("not found. Please try a different model.")) {
+        const modelMatch = error.message.match(/Model '([\w.-]+)' not found/);
         if (modelMatch && lastSubmission) {
           const failedModel = modelMatch[1];
           setModelError({
@@ -256,7 +256,6 @@ export default function App() {
       <ModelErrorDialog
         isOpen={!!modelError}
         failedModel={modelError?.failedModel || ""}
-        errorMessage={modelError?.errorMessage || ""}
         onContinueWithFallback={handleModelErrorContinue}
         onRetryWithDifferent={handleModelErrorRetry}
         onClose={handleModelErrorClose}

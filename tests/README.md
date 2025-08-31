@@ -12,7 +12,7 @@ Prevent frontend/backend model mismatches that can cause 404 model errors and ap
 # Run all model validation tests
 ./tests/test-model-validation.sh
 
-# Run backend tests only  
+# Run backend tests only
 cd backend && python -m pytest tests/test_model_validation.py -v
 
 # Run frontend tests only
@@ -21,7 +21,7 @@ cd frontend && npm run test:run
 
 ### What is Tested
 - ✅ Backend models follow stable naming conventions
-- ✅ Frontend model options are valid Gemini models  
+- ✅ Frontend model options are valid Gemini models
 - ✅ No deprecated preview models in frontend
 - ✅ Model names are consistent between frontend and backend
 - ✅ Recommended models are stable versions

@@ -33,7 +33,7 @@ else
     BACKEND_PASSED=false
 fi
 
-# Frontend Tests  
+# Frontend Tests
 echo -e "\n${YELLOW}🌐 Running Frontend Model Validation Tests...${NC}"
 cd ../frontend
 
@@ -57,15 +57,15 @@ if [ "$BACKEND_PASSED" = true ] && [ "$FRONTEND_PASSED" = true ]; then
     exit 0
 else
     echo -e "${RED}⚠️  Some model validation tests failed!${NC}"
-    
+
     if [ "$BACKEND_PASSED" = false ]; then
         echo -e "${RED}   - Backend model configuration issues detected${NC}"
     fi
-    
+
     if [ "$FRONTEND_PASSED" = false ]; then
         echo -e "${RED}   - Frontend model configuration issues detected${NC}"
     fi
-    
+
     echo -e "\n${YELLOW}💡 What this means:${NC}"
     echo "   - Your models may not work correctly"
     echo "   - Users might see 404 model errors"
@@ -76,6 +76,6 @@ else
     echo "   - Ensure backend configuration matches frontend options"
     echo "   - Remove any deprecated 'preview-XX-XX' model names"
     echo "   - Use stable names like 'gemini-2.5-flash' instead of preview versions"
-    
+
     exit 1
 fi

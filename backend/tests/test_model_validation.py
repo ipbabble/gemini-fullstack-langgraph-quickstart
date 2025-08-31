@@ -70,7 +70,7 @@ class TestModelValidation:
             )
 
             # Should follow gemini-X.Y-model pattern
-            assert re.match(r"^gemini-\d+\.\d+-(flash|pro)(-lite)?", model), (
+            assert re.match(r"^gemini-\d+\.\d+-(flash|pro)(-lite)?$", model), (
                 f"Model {model} doesn't follow expected naming pattern"
             )
 
